@@ -1,0 +1,20 @@
+{
+  "name": "zomato-app",
+  "version": "1.0.0",
+  "description": "zomato app",
+  "main": "server.js",
+  "dependencies": {
+    "dotenv": "^14.3.0",
+    "express": "^4.17.2",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "scripts": {
+    "start": "NODE_ENV = production node server",
+    "dev": "nodemon server"
+  },
+  "author": "Ishita",
+  "license": "MIT"
+}
