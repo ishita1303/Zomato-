@@ -1,47 +1,91 @@
-// // @desc      Get Menu
+const ErrorResponse = require('../utils/errorResponse')
+const asyncHandler = require('../middleware/async')
+const Menu = require('../models/Menu')
+
+// @desc      GET All Menu items
 // @route     GET /api/v1/menu
-// @route     GET /api/v1/restaurant/:restaurantId/menu
 // @access    Public
+exports.getMenu = asyncHandler(async(req, res, next)=>{
+  let query;
+  const reqQuery = {...req.query}
 
-// exports.getMenu = asyncHandler(async(req, res, next)=>{
-//   if(req.params.restaurantId){
-//     comst menu = await Menu.find({restaurant: req.params.restaurantId})
+  const removeFields = ['select', 'sort']
+  removeFields.forEach(param => delete reqQuery[param])
+  
+  let queryStr = JSON.stringify(reqQuery)
+  queryStr = queryStr.replace(/\b(gt|gte|lt|in)\b/g, match => `$${match}`)
     
-//     return res.status(200).json({
-//       success: true,
-//       count: menu.length,
-//       data: menu
-//     });
-//   } else {
-//     res.status(200).json(res.advanceResults);
-//   }
-// });
-// cart ka schema
-// all menu items[{
-//   menu: uska id
-// },
-// {quatity: },{price: }]
+  query = Menu.find(JSON.parse(queryStr))
 
-// @desc      Get single menu item
+  if(req.query.select){
+    const fields = req.query.select.split(',').join(' ')
+    query = query.select(fields)
+  }  
+
+  if(req.query.sort){
+    const sortBy = req.query.sort.split(',').join('')
+    query = query.sort(sortBy)
+  }
+  
+  const menu = await query
+
+    res.status(200).json({success:true, count: menu.length, data: menu})
+  })
+  
+
+// @desc      GET single Menu item
 // @route     GET /api/v1/menu/:id
+// @access    Private
+exports.getMenuItem = asyncHandler(async(req, res, next)=>{
+    const menu = await Menu.findById(req.params.id)
+
+    if(!menu){
+      return next(
+        new ErrorResponse(`Menu item not found with an id of ${req.params.id}`, 404)
+      )
+    }
+    res.status(200).json({success: true, data: menu})
+  })
+  
+// @desc      Create Menu item
+// @route     POST /api/v1/menu
 // @access    Public
-// exports.getMenu = asyncHandler(async (req, res, next) => {
-//   const menu = await Menu.findById(req.params.id).populate({
-//     path: 'bootcamp',
-//     select: 'name description'
-//   });
+exports.createMenu = asyncHandler(async(req, res, next)=>{
+    const menu = await Menu.create(req.body)
+    res.status(200).json({success: true, data: menu})
+  })
 
-//   if (!course) {
-//     return next(
-//       new ErrorResponse(`No course with the id of ${req.params.id}`, 404)
-//     );
-//   }
+// @desc      Update Menu item
+// @route     PUT /api/v1/menu/:id
+// @access    Private
+exports.updateMenu = asyncHandler(async(req, res, next)=>{
+    const menu = await Menu .findByIdAndUpdate(req.params.id, req.body,{
+      new: true,
+      runValidators: true
+    })
 
-//   res.status(200).json({
-//     success: true,
-//     data: course
-//   });
-// });
+    if(!menu){
+      return next(
+        new ErrorResponse(`Menu item not found with an id of ${req.params.id}`, 404)
+      )
+    }
+
+    res.status(200).json({success:true, data: menu})
+  })
+
+// @desc      Delete Menu item
+// @route     DELETE /api/v1/menu/:id
+// @access    Private
+exports.deleteMenu = asyncHandler(async(req, res, next)=>{
+    const menu = await Menu.findByIdAndDelete(req.params.id)
+    if(!menu){
+      return next(
+        new ErrorResponse(`Menu item not found with an id of ${req.params.id}`, 404)
+      )
+    }
+  res.status(200).json({success:true, data:{}})
+})
+
 
 
 
