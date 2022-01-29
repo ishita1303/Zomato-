@@ -13,19 +13,25 @@ const restaurantRouter = require('./restaurant')
 
 const router = express.Router()
 
+const {protect, authorize} = require('../middleware/auth')
+
 router.use('/:menuName/restaurant', restaurantRouter)
+
+//router.route('/:id/photo').put(protect, authorize('creater', 'admin'), menuPhotoUpload)
 
 router
   .route('/')
   .get(getMenu)
-  .post(createMenu)
+  .post(protect, authorize('creater', 'admin'), createMenu)
 
 router
   .route('/:id')
   .get(getMenuItem)
-  .put(updateMenu)
-  .delete(deleteMenu)
+  .put(protect, authorize('creater', 'admin'), updateMenu)
+  .delete(protect, authorize('creater', 'admin'), deleteMenu)
 
-router.route('/getRestros').post(getRestaurantsWithMenuName)
+router
+.route('/getRestros')
+.post(protect, getRestaurantsWithMenuName)
 
 module.exports = router

@@ -51,6 +51,14 @@ exports.getMenuItem = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/menu
 // @access    Public
 exports.createMenu = asyncHandler(async (req, res, next) => {
+  req.body.user = req.user.id
+
+  const createdMenu = await Menu.findOne({user: req.user.id})
+
+  if(createdMenu && req.user.role != 'admin'){
+    return next(new ErrorResponse(`The user with ID ${req.user.id} has already created the menu`, 400))
+  }
+
   const menu = await Menu.create(req.body)
   res.status(200).json({ success: true, data: menu })
 })
@@ -59,16 +67,24 @@ exports.createMenu = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/v1/menu/:id
 // @access    Private
 exports.updateMenu = asyncHandler(async (req, res, next) => {
-  const menu = await Menu.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true
-  })
+  let menu = await Menu.findById(req.params.id)
 
   if (!menu) {
     return next(
       new ErrorResponse(`Menu item not found with an id of ${req.params.id}`, 404)
     )
   }
+
+  if(menu.user.toString() !== req.user.id && req.user.role !== 'admin'){ 
+    return next(
+      new ErrorResponse(`User ${req.params.id} is not authorized to update the menu`, 401)
+    )
+  }
+
+  menu = await Menu.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true
+  })
 
   res.status(200).json({ success: true, data: menu })
 })
@@ -77,16 +93,26 @@ exports.updateMenu = asyncHandler(async (req, res, next) => {
 // @route     DELETE /api/v1/menu/:id
 // @access    Private
 exports.deleteMenu = asyncHandler(async (req, res, next) => {
-  const menu = await Menu.findByIdAndDelete(req.params.id)
+  const menu = await Menu.findById(req.params.id)
   if (!menu) {
     return next(
       new ErrorResponse(`Menu item not found with an id of ${req.params.id}`, 404)
     )
   }
+
+  if(menu.user.toString() !== req.user.id && req.user.role !== 'admin'){ 
+    return next(
+      new ErrorResponse(`User ${req.params.id} is not authorized to delete the menu`, 401)
+    )
+  }
+
+  await menu.remove()
   res.status(200).json({ success: true, data: {} })
 })
 
-
+// @desc      Get Restaurants With Menu Name
+// @route     POST /api/v1/menu/getRestros
+// @access    Private
 exports.getRestaurantsWithMenuName = asyncHandler(async (req, res) => {
 
   const menuName = req.body.menuName;

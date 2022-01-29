@@ -2,19 +2,19 @@
   "_id": "5d713995b721c3bb38c1f523",
   "name": "Sandwich",
   "description":"Traditiona; grill sandwich-veggies and 2 layers of ceese!. The favourite sandwich comes with triple layer o ftriangle bread stuffed with fresh vegetables.",
-  "availability":"Availabe" ,
+  "availability":"Available" ,
   "price":200,
   "rating":5,
-  "restaurant id":"5d7a514b5d2c12c7449be045",
-  "user id": "5d725a4a7b292f5f8ceff789"
+  "restaurant":"5d7a514b5d2c12c7449be045",
+  "user": "5d725a4a7b292f5f8ceff789"
 },
 {
   "_id": "5d713995b721c3bb38c1f524",
   "name": "Pizza",
   "description":"Traditiona; pizza and 2 layers of cheese!. The favourite sandwich comes with triple layer of triangle bread stuffed with fresh vegetables.",
-  "availability":"Availabe" ,
+  "availability":"Available" ,
   "price":200,
   "rating":5,
-  "restaurant id":"5d7a514b5d2c12c7449be045",
-  "user id": "5d725a4a7b292f5f8ceff790" 
+  "restaurant":"5d7a514b5d2c12c7449be045",
+  "user": "5d725a4a7b292f5f8ceff790" 
 }]
