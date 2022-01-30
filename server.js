@@ -16,6 +16,7 @@ connectDB()
 const menu = require('./routes/menu')
 const restaurant = require('./routes/restaurant')
 const auth = require('./routes/auth')
+const cart = require('./routes/cart')
 
 const app = express()
 
@@ -31,6 +32,7 @@ if(process.env.NODE_ENV === 'development'){
 app.use('/api/v1/menu', menu)
 app.use('/api/v1/restaurant', restaurant)
 app.use('/api/v1/auth', auth)
+app.use('/api/v1/cart', cart)
 
 app.use(errorHandler)
 

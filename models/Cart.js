@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const CartSchema = new mongoose.Schema({
-  AllItems:[{menuId:{
+  items:[{menuId:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Menu'
   }},{
@@ -10,11 +10,11 @@ const CartSchema = new mongoose.Schema({
     required: true,
     min: 1,
     required:['Please include quantity.']
-  }}],
+  }},{
   price: {
     type: Number,
     required: true
-  },
+  }}],
     totalCost: {
       type: Number,
       default: 0
