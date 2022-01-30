@@ -7,10 +7,12 @@ const Cart = require('../models/Cart')
 
 const router = express.Router({ mergeParams: true })
 
+const { protect } = require('../middleware/auth')
+
 
 
 router
   .route('/')
-  .post(createCart)
+  .post(protect, createCart)
 
 module.exports = router
